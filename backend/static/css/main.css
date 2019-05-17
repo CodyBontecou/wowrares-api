@@ -1,0 +1,151 @@
+:root {
+  --yellow: #ffc600;
+  --black: #272727;
+}
+html {
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+  Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 900;
+  font-size: 10px;
+  color: var(--black);
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.07);
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+a {
+  text-decoration: none;
+  color: var(--black);
+}
+body {
+  background-image: url("./images/topography.svg"),
+  linear-gradient(110deg, #f93d66, #6d47d9);
+  background-size: 340px, auto;
+  min-height: calc(100vh - 100px);
+  margin: 50px;
+  /* background: white; */
+  background-attachment: fixed;
+  letter-spacing: -1px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 5px 0;
+}
+.item {
+  display: grid;
+  border: 5px solid rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+  font-size: 25px;
+  background-color: var(--yellow);
+}
+.item p {
+  margin: 0 0 5px 0;
+}
+.container {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-areas: 
+  "header header header"
+  "sidebar map mobs"
+  "sidebar mob-info mobs"
+  "footer footer footer"
+}
+.header {
+  grid-area: header;
+}
+.sidebar-nav {
+  grid-area: sidebar;
+  overflow: auto;
+}
+.map {
+  grid-area: map;
+}
+.map-point {
+  position: relative;
+}
+.mobs {
+  grid-area: mobs;
+}
+.mob {
+  display: grid;
+  grid-template-rows: 50px;
+  grid-template-areas: 
+  "mob-name mob-coordinates mob-drops";
+}
+.mob-name {
+  grid-area: mob-name;
+}
+.mob-coodinates {
+  grid-area: mob-coordinates;
+}
+.mob-drops {
+  display: grid;
+  grid-area: mob-drops;
+}
+.mob-info {
+  grid-area: mob-info;
+  display: grid;
+  grid-template-areas: 
+  "mob-picture info"
+}
+.mob-picture {
+  grid-area: mob-picture;
+}
+.info {
+  grid-area: info;
+  display: grid;
+  grid-template-areas:
+  "name"
+  "level"
+  "health"
+  "damage"
+}
+.name {
+  grid-area: name;
+}
+.level {
+  grid-area: level;
+}
+.health {
+  grid-area: health;
+}
+.damage {
+  grid-area: damage;
+}
+.footer {
+  grid-area: footer;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    grid-template-areas: 
+      "header header"
+      "sidebar map"
+      "sidebar mob-info"
+      "sidebar mobs"
+      "footer footer"
+  }
+}
+
+@media (max-width: 730px) {
+  .container {
+    grid-template-areas: 
+    "header header"
+    "map map"
+    "mob-info mob-info"
+    "mobs mobs"
+    "footer footer"
+  }
+  .mobs {
+    grid-template-areas: 
+    "mob-name mob-coordinates"
+    "mob-drops mob-drops";
+  }
+}

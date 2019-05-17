@@ -1,1 +1,1 @@
-web: gunicorn wowrares.wsgi
+web: gunicorn wow_rares.wsgi

@@ -1,19 +1,16 @@
 ''' View functions that manage the data going to and from urls and templates '''
 
 import os
-import pprint
-
-import requests
 from time import sleep
-import mysql.connector
-from django.http import HttpResponse
 
+import mysql.connector
+import requests
 from django.shortcuts import render
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.by import By
 
-from .models import Zone, Mob, Item
+from .models import Zone, Mob, Item, ItemInfo
 
 
 def home(request):
@@ -22,22 +19,17 @@ def home(request):
     the site structure and sidebar navigation to each Zone
     '''
     context = {
-        'zones': Zone.objects.all()
+        'zones': Zone.objects.all(),
+        'items': Item.objects.all(),
+        'item_infos': ItemInfo.objects.all()
     }
-    return render(request, 'grid-template-areas.html', context)
+    return render(request, 'index.html', context)
 
 
 def update(request):
-    # generate_mob_name_and_id_array()
-    # get_item_information()
-    # scrape_zone_images()
-    items, item_infos = query_creature_loot()
-    context = {
-        'zones': Zone.objects.all(),
-        'items': items,
-        'item_infos': item_infos
-    }
-    return render(request, 'index.html',  context)
+    query_creature_loot()
+    # query_item_info()
+    return render(request, 'index.html',  {})
 
 
 def zone_view(request, zone):
@@ -276,8 +268,6 @@ def query_all_creatures(connection):
 
 def query_creature_loot():
     connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
-    mob_items = []
-    item_infos = []
     for mob in Mob.objects.all():
         print(mob.name)
         cursor = connection.cursor()
@@ -287,27 +277,24 @@ def query_creature_loot():
         result = [dict(zip(fields, row)) for row in cursor.fetchall()]
 
         for item in result:
-            item_model = Item.objects.create(drop_rate=item['ChanceOrQuestChance'])
-            mob_items.append({item_model: item})
-            # item['ChanceOrQuestChance']
-
-        for item in mob_items:
+            # Item.objects.create(drop_rate=item['ChanceOrQuestChance'],)
             print(item)
-        item_infos = query_item_info(result, connection)
     connection.close()
 
-    return mob_items, item_infos
 
-
-def query_item_info(items, connection):
-    item_infos = []
-    for item in items:
+def query_item_info():
+    connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
+    for item in Item.objects.all():
         cursor = connection.cursor()
         query = (f"SELECT * FROM item_template WHERE entry={item['item']};")
         cursor.execute(query)
         fields = [i[0] for i in cursor.description]
         result = [dict(zip(fields, row)) for row in cursor.fetchall()]
-        for item_info in result:
-            item_infos.append(item_info)
-    return item_infos
+        for i in result:
+            # item.i_level = i['item_level']
+            # item.image = ''
+            # item.name = i['name']
+            # item.required_level = i['required_level']
+            # item.type = i['']
+            print(i)
 

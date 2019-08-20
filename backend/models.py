@@ -48,12 +48,15 @@ class Item(models.Model):
     """
     Object representing the items that drop off of a mob
     """
-    drop_rate = models.TextField(blank=True)
-    i_level = models.TextField(blank=True)
-    image = models.TextField(blank=True)
-    name = models.TextField(blank=True)
-    required_level = models.TextField(blank=True)
-    type = models.TextField(blank=True)
+    entry = models.TextField(blank=True)
+    item = models.TextField(blank=True)
+    ChanceOrQuestChance = models.TextField(blank=True)
+    groupid = models.TextField(blank=True)
+    mincountOrRef = models.TextField(blank=True)
+    maxcount = models.TextField(blank=True)
+    condition_id = models.TextField(blank=True)
+    patch_min = models.TextField(blank=True)
+    patch_max = models.TextField(blank=True)
 
     def __str__(self):
         return self.name

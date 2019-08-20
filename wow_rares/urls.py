@@ -34,7 +34,7 @@ class ItemViewSetList(generics.ListAPIView):
 
 
 class ZoneViewSetList(generics.ListAPIView):
-    queryset = Zone.objects.all()
+    queryset = Zone.objects.all().order_by('name')
     serializer_class = ZoneSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('name', 'id')

@@ -1,7 +1,11 @@
 ''' View functions that manage the data going to and from urls and templates '''
 
 import os
+import pprint
+
+import requests
 from time import sleep
+import mysql.connector
 
 from django.shortcuts import render
 from selenium import webdriver
@@ -24,11 +28,13 @@ def home(request):
 
 def update(request):
     # generate_mob_name_and_id_array()
-    get_item_information()
+    # get_item_information()
+    # scrape_zone_images()
+    query_creature_loot()
     context = {
         'zones': Zone.objects.all()
     }
-    return render(request, 'grid-template-areas.html', context)
+    return render(request, 'index.html', context)
 
 
 def zone_view(request, zone):
@@ -238,3 +244,63 @@ def create_new_mob_objects(array, zone):
             model_id=item[4]['Model']
         ))
     Mob.objects.bulk_create(mobs)
+
+
+def scrape_zone_images():
+    browser = webdriver.Chrome(os.environ.get("CHROMEDRIVER"))
+    for zone in Zone.objects.all():
+        saved_file_name = zone.name.replace(' ', '-').lower() + '-map-picture.png'
+        browser.get(zone.image)
+        img_src = browser.find_element(By.TAG_NAME, 'img').get_attribute('src')
+
+        with open('../wow-rares/wow-rares/static/' + saved_file_name, 'wb') as handle:
+            response = requests.get(img_src, stream=True)
+            if not response.ok:
+                print(response)
+            for block in response.iter_content(1024):
+                if not block:
+                    break
+                handle.write(block)
+
+
+def query_all_creatures(connection):
+    cursor = connection.cursor()
+    query = ("SELECT * from creature;")
+    cursor.execute(query)
+    cursor.close()
+    return [creature for creature in cursor]
+
+
+def query_creature_loot():
+    connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
+    for mob in Mob.objects.all():
+        print(mob.name)
+        cursor = connection.cursor()
+        query = (f"SELECT * FROM creature_loot_template WHERE entry={mob.websites_id};")
+        cursor.execute(query)
+        fields = [i[0] for i in cursor.description]
+        result = [dict(zip(fields, row)) for row in cursor.fetchall()]
+
+        mob_items = []
+        for item in result:
+            item_model = Item.objects.create(drop_rate=item['ChanceOrQuestChance'])
+            mob_items.append({item_model: item})
+            # item['ChanceOrQuestChance']
+
+        for item in mob_items:
+            print(item)
+        # query_item_info(result, connection)
+    connection.close()
+
+
+def query_item_info(items, connection):
+    for item in items:
+        cursor = connection.cursor()
+        query = (f"SELECT * FROM item_template WHERE entry={item['item']};")
+        cursor.execute(query)
+        fields = [i[0] for i in cursor.description]
+        result = [dict(zip(fields, row)) for row in cursor.fetchall()]
+        for item_info in result:
+            pprint.pprint(item_info)
+            break
+

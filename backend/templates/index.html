@@ -5,6 +5,20 @@
     <title>Title</title>
 </head>
 <body>
-<h1>WE HEEERe</h1>
+
+{#{% for item in items %}#}
+{#    {{ item }}#}
+{#    <br/>#}
+{#{% endfor %}#}
+{##}
+{#{% for item in item_infos %}#}
+{#    {{ item }}#}
+{#    <br/>#}
+{#{% endfor %}#}
+
+<pre>{{ items | pprint }}</pre>
+<pre>{{ item_infos | pprint }}</pre>
+
+
 </body>
 </html>

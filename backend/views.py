@@ -6,6 +6,7 @@ import pprint
 import requests
 from time import sleep
 import mysql.connector
+from django.http import HttpResponse
 
 from django.shortcuts import render
 from selenium import webdriver
@@ -30,11 +31,13 @@ def update(request):
     # generate_mob_name_and_id_array()
     # get_item_information()
     # scrape_zone_images()
-    query_creature_loot()
+    items, item_infos = query_creature_loot()
     context = {
-        'zones': Zone.objects.all()
+        'zones': Zone.objects.all(),
+        'items': items,
+        'item_infos': item_infos
     }
-    return render(request, 'index.html', context)
+    return render(request, 'index.html',  context)
 
 
 def zone_view(request, zone):
@@ -273,6 +276,8 @@ def query_all_creatures(connection):
 
 def query_creature_loot():
     connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
+    mob_items = []
+    item_infos = []
     for mob in Mob.objects.all():
         print(mob.name)
         cursor = connection.cursor()
@@ -281,7 +286,6 @@ def query_creature_loot():
         fields = [i[0] for i in cursor.description]
         result = [dict(zip(fields, row)) for row in cursor.fetchall()]
 
-        mob_items = []
         for item in result:
             item_model = Item.objects.create(drop_rate=item['ChanceOrQuestChance'])
             mob_items.append({item_model: item})
@@ -289,11 +293,14 @@ def query_creature_loot():
 
         for item in mob_items:
             print(item)
-        # query_item_info(result, connection)
+        item_infos = query_item_info(result, connection)
     connection.close()
+
+    return mob_items, item_infos
 
 
 def query_item_info(items, connection):
+    item_infos = []
     for item in items:
         cursor = connection.cursor()
         query = (f"SELECT * FROM item_template WHERE entry={item['item']};")
@@ -301,6 +308,6 @@ def query_item_info(items, connection):
         fields = [i[0] for i in cursor.description]
         result = [dict(zip(fields, row)) for row in cursor.fetchall()]
         for item_info in result:
-            pprint.pprint(item_info)
-            break
+            item_infos.append(item_info)
+    return item_infos
 

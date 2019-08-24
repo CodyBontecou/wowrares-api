@@ -59,7 +59,7 @@ class Item(models.Model):
     patch_max = models.TextField(blank=True)
 
     def __str__(self):
-        return self.name
+        return self.entry
 
 
 class ItemInfo(models.Model):
@@ -195,3 +195,6 @@ class ItemInfo(models.Model):
     stat_value8 = models.TextField(blank=True)
     stat_value9 = models.TextField(blank=True)
     subclass = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name

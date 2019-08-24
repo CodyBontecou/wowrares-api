@@ -27,7 +27,7 @@ def home(request):
 
 
 def update(request):
-    query_creature_loot()
+    # query_creature_loot()
     # query_item_info()
     return render(request, 'index.html',  {})
 
@@ -269,7 +269,6 @@ def query_all_creatures(connection):
 def query_creature_loot():
     connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
     for mob in Mob.objects.all():
-        print(mob.name)
         cursor = connection.cursor()
         query = (f"SELECT * FROM creature_loot_template WHERE entry={mob.websites_id};")
         cursor.execute(query)
@@ -278,7 +277,15 @@ def query_creature_loot():
 
         for item in result:
             # Item.objects.create(drop_rate=item['ChanceOrQuestChance'],)
-            print(item)
+            i = Item()
+            for field in Item._meta.get_fields():
+                if field.name is not 'id':
+                    if not field.__class__.__name__ == 'ManyToManyRel':
+                        processed_field_text = str(field).replace('backend.Item.', '')
+                        setattr(i, processed_field_text, item[processed_field_text])
+                    # print(processed_field_text)
+            i.save()
+
     connection.close()
 
 
@@ -286,15 +293,18 @@ def query_item_info():
     connection = mysql.connector.connect(user='root', password='Hhtpqrs1234!', host='127.0.0.1', database='wow_classic')
     for item in Item.objects.all():
         cursor = connection.cursor()
-        query = (f"SELECT * FROM item_template WHERE entry={item['item']};")
+        query = (f"SELECT * FROM item_template WHERE entry={item.entry};")
         cursor.execute(query)
         fields = [i[0] for i in cursor.description]
         result = [dict(zip(fields, row)) for row in cursor.fetchall()]
-        for i in result:
-            # item.i_level = i['item_level']
-            # item.image = ''
-            # item.name = i['name']
-            # item.required_level = i['required_level']
-            # item.type = i['']
-            print(i)
 
+        for r in result:
+            i = ItemInfo()
+            for field in ItemInfo._meta.get_fields():
+                if field.name is not 'id':
+                    if field.name is '_class':
+                        setattr(i, '_class', r['class'])
+                    else:
+                        processed_field_text = str(field).replace('backend.ItemInfo.', '')
+                        setattr(i, processed_field_text, r[processed_field_text])
+            i.save()

@@ -38,7 +38,7 @@ class Mob(models.Model):
     zone = models.ForeignKey(Zone, on_delete=models.CASCADE)
     items = models.ManyToManyField('Item', blank=True)
     websites_id = models.TextField(blank=True)
-    active = models.BooleanField(default=False)
+    active = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.name

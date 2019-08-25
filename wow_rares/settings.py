@@ -133,10 +133,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost:3000',
-#     'localhost:5000'
-# )
+CORS_ORIGIN_WHITELIST = (
+    'wowrares.com'
+)
 # CORS_ALLOW_HEADERS = ('cache-control', 'Access-Control-Allow-Origin')
 
 

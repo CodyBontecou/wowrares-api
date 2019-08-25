@@ -55,6 +55,6 @@ urlpatterns = [
     url(r'api/v1/zones/', ZoneViewSetList.as_view(), name='zones'),
     url(r'api/v1/mobs/', MobViewSetList.as_view(), name='mobs'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('update/', update, name='update'),
+    # path('update/', update, name='update'),
     path('admin/', admin.site.urls),
 ]

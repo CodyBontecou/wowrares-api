@@ -81,7 +81,7 @@ DATABASES = {
         "USER": "",
         "PASSWORD": "",
         "HOST": "localhost",
-        "PORT": "5433",
+        "PORT": "5432",
     }
 }
 
@@ -141,4 +141,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 import django_heroku
 django_heroku.settings(locals())
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 8500
 

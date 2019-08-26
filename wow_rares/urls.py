@@ -49,6 +49,7 @@ class MobViewSetList(generics.ListAPIView):
 
 router = routers.DefaultRouter()
 
+
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'api/v1/items/', ItemViewSetList.as_view(), name='items'),

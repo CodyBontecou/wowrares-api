@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('WOWRARES_DJANGO_PRIVATE_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -132,11 +132,11 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = (
-    "https://wowrares.com"
-)
-CORS_ALLOW_HEADERS = ('cache-control', 'Access-Control-Allow-Origin')
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     "https://wowrares.com"
+# )
+# CORS_ALLOW_HEADERS = ('cache-control', 'Access-Control-Allow-Origin')
 
 
 import django_heroku
